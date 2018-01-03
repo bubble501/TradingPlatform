@@ -12,6 +12,7 @@ from time import sleep
 from threading import Thread
 import ssl
 import websocket
+from .E_binance_config import ticker_schema
 
 basehost = 'wss://stream.binance.com:9443/ws/'
 
@@ -62,9 +63,12 @@ class BinanceApi(object):
     def onMessage(self, ws, evt):
         """信息推送"""
         print('onMessage')
+        global dataarray,colname
+        dataarray = []
         data = json.loads(evt)
+        dataarray.append(list(data.values()))
 
-        print(data)
+        print(dataarray)
 
     # ----------------------------------------------------------------------
     def onError(self, ws, evt):
