@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/trading.iml" filepath="$PROJECT_DIR$/.idea/trading.iml" />
+      <module fileurl="file://C:/algo/tradingproj/.idea/tradingproj.iml" filepath="C:/algo/tradingproj/.idea/tradingproj.iml" />
     </modules>
   </component>
 </project>

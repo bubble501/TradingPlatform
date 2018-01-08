@@ -18,5 +18,5 @@ param = {'depth':{'event':'addChannel',
 while not stop:
     if test.ws.sock.connected:
         test.sendMarketDataRequest(param)
-        t1 = test.saveData(tablename)
+        # t1 = test.saveData(tablename)
         stop = True
