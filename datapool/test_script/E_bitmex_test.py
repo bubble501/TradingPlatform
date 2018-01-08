@@ -12,4 +12,4 @@ from datapool.E_bitmex.E_bitmex_api import BitmexApi
 
 api = BitmexApi()
 api.connect()
-api.sendMarketDataRequest(['trade:XBTUSD'])
+# api.sendMarketDataRequest(['orderBookL2:XBTUSD'])

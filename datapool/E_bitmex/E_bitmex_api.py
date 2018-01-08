@@ -12,8 +12,9 @@ from time import sleep
 from threading import Thread
 import ssl
 import websocket
+from datapool.api_config import bitmex_ws
 
-basehost = 'wss://stream.binance.com:9443/ws/'
+basehost = bitmex_ws
 
 ########################################################################
 class BitmexApi(object):

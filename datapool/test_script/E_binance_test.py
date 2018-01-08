@@ -11,4 +11,4 @@ from datapool.E_binance.E_binance_api import BinanceApi
 # srtkey = 'CpVMbJrVZIExkt2ye1vAzZNLBuuxFRqmpLozTT15qD1Cgj3lrS5J3tiF9itg9CFF'
 
 api = BinanceApi()
-api.connect('btcusdt','ticker')
+api.connect('btcusdt','depth')

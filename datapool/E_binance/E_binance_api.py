@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on 2018/1/2 22:02 
+Created on 2018/1/2 22:02
 
 @author: JERRY
 """
@@ -97,7 +97,7 @@ class BinanceApi(object):
                                          on_close=self.onClose,
                                          on_open=self.onOpen)
 
-        self.thread = Thread(target=self.ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE}))
+        self.thread = Thread(target=self.ws.run_forever(sslopt={"cert_reqs": False}))
         self.thread.start()
 
     # ----------------------------------------------------------------------
@@ -113,7 +113,7 @@ class BinanceApi(object):
                                          on_close=self.onClose,
                                          on_open=self.onOpen)
 
-        self.thread = Thread(target=self.ws.run_forever(sslopt={"cert_reqs": False}))
+        self.thread = Thread(target=self.ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE}))
         self.thread.start()
 
     # ----------------------------------------------------------------------
@@ -163,3 +163,7 @@ class BinanceApi(object):
             self.ws.send(j)
         except websocket.WebSocketConnectionClosedException:
             pass
+
+if __name__ == '__main__':
+    test = BinanceApi()
+    test.connect()
