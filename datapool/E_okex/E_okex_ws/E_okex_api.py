@@ -4,14 +4,13 @@ Created on 2018/1/8 0:13
 
 @author: JERRY
 """
-
+import ssl
 import json
 from time import sleep
 from threading import Thread
 import websocket
 from datapool.api_config import okex_ws
-from datapool.wsutilfunc import wsUtil, res
-
+from datapool.wsutilfunc import wsUtil
 
 ########################################################################
 class OkexApi(wsUtil):
@@ -31,11 +30,13 @@ class OkexApi(wsUtil):
     def onMessage(self, ws, evt):
         """信息推送"""
         if json.loads(evt)[0]['data'].get('asks'):
-            res.append(json.dumps(json.loads(evt)[0]['data']))
+            self.res.append(json.dumps(json.loads(evt)[0]['data']))
+        print('onMessage中全局变量长度为'+str(len(self.res)))
 
     # ----------------------------------------------------------------------
     def connect(self, trace=False):
         """连接服务器"""
+
         websocket.enableTrace(trace)
         self.ws = websocket.WebSocketApp(url=self.host,
                                          on_message=self.onMessage,
@@ -43,8 +44,12 @@ class OkexApi(wsUtil):
                                          on_close=self.onClose,
                                          on_open=self.onOpen)
 
-        self.thread = Thread(target=self.ws.run_forever)
+        self.thread = Thread(target=self.ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE}))
         self.thread.start()
+
+        while not self.ws.sock.connected:
+            print('正在连接...')
+            sleep(1)
 
     # ----------------------------------------------------------------------
     def reconnect(self):
@@ -61,6 +66,10 @@ class OkexApi(wsUtil):
 
         self.thread = Thread(target=self.ws.run_forever)
         self.thread.start()
+
+        while not self.ws.sock.connected:
+            print('正在连接...')
+            sleep(1)
 
     # ----------------------------------------------------------------------
     def sendMarketDataRequest(self, symbol=None):
