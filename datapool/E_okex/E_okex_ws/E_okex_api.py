@@ -4,22 +4,22 @@ Created on 2018/1/8 0:13
 
 @author: JERRY
 """
-import ssl
 import json
 from time import sleep
 from threading import Thread
 import websocket
 from datapool.api_config import okex_ws
-from datapool.wsutilfunc import wsUtil
+from utilPool.wsUtil import wsUtilfunc
+from utilPool.generalUtil import myThread
 
 ########################################################################
-class OkexApi(wsUtil):
+class OkexApi(wsUtilfunc):
     """基于Websocket的API对象"""
 
     # ----------------------------------------------------------------------
     def __init__(self):
         """Constructor"""
-        wsUtil.__init__(self)
+        wsUtilfunc.__init__(self)
         self.apiKey = ''  # 用户名
         self.secretKey = ''  # 密码
         self.host = okex_ws  # 服务器地址
@@ -44,12 +44,12 @@ class OkexApi(wsUtil):
                                          on_close=self.onClose,
                                          on_open=self.onOpen)
 
-        self.thread = Thread(target=self.ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE}))
-        self.thread.start()
+        self.thread = myThread('connect',self.ws.run_forever)
+        self.thread.go()
 
-        while not self.ws.sock.connected:
-            print('正在连接...')
-            sleep(1)
+        # while not self.ws.sock.connected:
+        #     print('正在连接...')
+        #     sleep(1)
 
     # ----------------------------------------------------------------------
     def reconnect(self):
@@ -64,8 +64,8 @@ class OkexApi(wsUtil):
                                          on_close=self.onClose,
                                          on_open=self.onOpen)
 
-        self.thread = Thread(target=self.ws.run_forever)
-        self.thread.start()
+        self.thread = myThread('reconnect', self.ws.run_forever)
+        self.thread.go()
 
         while not self.ws.sock.connected:
             print('正在连接...')

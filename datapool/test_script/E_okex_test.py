@@ -16,5 +16,5 @@ param = {'depth':{'event':'addChannel',
                   'channel':'ok_sub_spot_btc_usdt_depth_5'}
          }
 
-test.sendMarketDataRequest(param)
-t1 = test.saveData(conn,tablename)
+# test.sendMarketDataRequest(param)
+# t1 = test.saveData(conn,tablename)

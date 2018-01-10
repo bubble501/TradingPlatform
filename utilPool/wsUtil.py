@@ -11,7 +11,7 @@ import json
 from time import sleep
 from threading import Thread
 
-class wsUtil(object):
+class wsUtilfunc(object):
     def __init__(self):
         self.res = []
 
