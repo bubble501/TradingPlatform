@@ -9,10 +9,11 @@ from datetime import datetime
 import pandas as pd
 import json
 from time import sleep
-from threading import Thread
+
 
 class wsUtilfunc(object):
     def __init__(self):
+        self.ws = None
         self.res = []
 
     def readData(self, evt):
@@ -30,17 +31,11 @@ class wsUtilfunc(object):
         print('接口发生错误')
         print(evt)
 
-    def data2sql(self, conn, tableName):
-        while True:
-            sleep(10)
-            tmp_ = pd.DataFrame.from_dict(self.res)
-            self.res = []
-            tmp_.to_sql(tableName, conn, if_exists='append')
-            print('当前时间为' + str(datetime.now()) + ',数据长度为' + str(len(tmp_)) + ',正在储存数据...')
-
     def saveData(self, conn, tableName):
-        t1 = Thread(target=self.data2sql, args=(conn, tableName))
-        t1.start()
+        tmp_ = pd.DataFrame.from_dict(self.res)
+        self.res = []
+        tmp_.to_sql(tableName, conn, if_exists='append')
+        print('当前时间为' + str(datetime.now()) + ',数据长度为' + str(len(tmp_)) + ',正在储存数据...')
 
     def onClose(self, ws):
         """接口断开"""
@@ -52,7 +47,9 @@ class wsUtilfunc(object):
 
     def close(self):
         """关闭接口"""
-        if self.thread and self.thread.isAlive:
-            self.ws.close()
-            self.thread.join()
-            print('接口已关闭')
+        self.ws.close()
+        print('接口已关闭')
+
+    def getStatus(self):
+        """返回状态"""
+        return self.ws.sock.connected

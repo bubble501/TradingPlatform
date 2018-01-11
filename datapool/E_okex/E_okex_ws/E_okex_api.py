@@ -46,6 +46,7 @@ class OkexApi(wsUtilfunc):
 
         self.thread = myThread('connect',self.ws.run_forever)
         self.thread.go()
+        self.thread.join()
 
         # while not self.ws.sock.connected:
         #     print('正在连接...')
@@ -66,10 +67,11 @@ class OkexApi(wsUtilfunc):
 
         self.thread = myThread('reconnect', self.ws.run_forever)
         self.thread.go()
+        self.thread.join()
 
-        while not self.ws.sock.connected:
-            print('正在连接...')
-            sleep(1)
+        # while not self.ws.sock.connected:
+        #     print('正在连接...')
+        #     sleep(1)
 
     # ----------------------------------------------------------------------
     def sendMarketDataRequest(self, symbol=None):
