@@ -12,7 +12,7 @@ from time import sleep
 from threading import Thread
 import ssl
 import websocket
-from datapool.api_config import bitmex_ws
+from datapool.general_config import bitmex_ws
 
 basehost = bitmex_ws
 

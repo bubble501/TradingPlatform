@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 """
-Created on 2018/1/8 0:13
+Created on 2018/1/12 11:47 
 
 @author: JERRY
 """
+
 import json
 from time import sleep
 from utilPool.generalUtil import myThread
 import websocket
-from datapool.general_config import okex_ws
+from datapool.general_config import huobi_ws
 from utilPool.wsUtil import wsUtilfunc
 
 
-class OkexApi(wsUtilfunc):
+class HuobiApi(wsUtilfunc):
     """基于Websocket的API对象"""
 
     def __init__(self):
@@ -21,14 +22,19 @@ class OkexApi(wsUtilfunc):
         self.apiKey = ''  # 用户名
         self.secretKey = ''  # 密码
         self.threadDict = {}
-        self.host = okex_ws  # 服务器地址
+        self.host = huobi_ws  # 服务器地址
 
     def onMessage(self, ws, evt):
         """信息推送"""
-        if json.loads(evt)[0]['data'].get('asks'):
-            self.res.append(json.dumps(json.loads(evt)[0]['data']))
+        data = self.readData(evt)
+        if json.loads(data).get('tick'):
+            self.res.append(data)
         print('onMessage中全局变量长度为'+str(len(self.res)))
-        # print(evt)
+        if data[:7] == '{"ping"':
+            ts = data[8:21]
+            pong = '{"pong":' + ts + '}'
+            self.ws.send(pong)
+        # print(data)
 
     def __connect(self, trace=False):
         """连接服务器"""
@@ -45,18 +51,16 @@ class OkexApi(wsUtilfunc):
             if not self.status:
                 self.__connect()
                 print('正在连接...')
-                self.threadDict['connect'] = myThread(target=self.ws.run_forever,args=args,kwargs=kwargs)
+                self.threadDict['connect'] = myThread(target=self.ws.run_forever, args=args, kwargs=kwargs)
                 self.threadDict['connect'].start()
-                while not self.status:
-                    print('请稍后...')
-                    sleep(1)
                 self.refreshSend = 1
+                sleep(10)
 
     def sendMarketDataRequest(self, symbol):
         """发送行情请求"""
         for i in list(symbol):
             try:
-                d = {'event': symbol[i]['event'], 'channel': symbol[i]['channel']}
+                d = {'sub': symbol[i]['sub'], 'id': symbol[i]['id']}
             except IndexError:
                 raise Exception('参数配置错误，请重新配置')
 

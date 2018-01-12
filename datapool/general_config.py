@@ -16,3 +16,6 @@ bitmex_ws = 'wss://www.bitmex.com/realtime'
 
 # --------------------------------------gateio config---------------------------------------
 gateio_rest = 'http://data.gate.io/api2/1/'
+
+# ---------------------------------------huobi config---------------------------------------
+huobi_ws = 'wss://api.huobi.pro/ws'

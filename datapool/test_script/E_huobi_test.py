@@ -1,27 +1,27 @@
 # -*- coding: utf-8 -*-
 """
-Created on 2018/1/12 11:53
+Created on 2018/1/12 11:53 
 
 @author: JERRY
 """
 
 import pymysql as ps
 from sqlalchemy import create_engine
-from datapool.E_okex.E_okex_ws.E_okex_api import OkexApi
+from datapool.E_huobi.E_huobi_ws.E_huobi_api import HuobiApi
 from utilPool.generalUtil import myThread
 
 ps.install_as_MySQLdb()
 
-proxy = {'http_proxy_host':'118.114.77.47',
-         'http_proxy_port':'8080'}
+proxy = {'http_proxy_host':'125.210.121.113',
+         'http_proxy_port':'3128'}
 
-tableName = 'okex'
+tableName = 'huobi'
 conn = create_engine('mysql://root:1qaz@WSX@192.168.8.203/zzmf_trading?charset=utf8',echo = False)
 
 threadList = []
-test = OkexApi()
-param = {'depth':{'event':'addChannel',
-                  'channel':'ok_sub_spot_btc_usdt_depth_5'}
+test = HuobiApi()
+param = {'depth':{'sub':'market.btcusdt.depth.step5',
+                  'id':'id1'}
          }
 
 threadList.append(myThread(name='monitor', target=test.isDisconn))
