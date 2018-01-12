@@ -12,8 +12,8 @@ from utilPool.generalUtil import myThread
 
 ps.install_as_MySQLdb()
 
-proxy = {'http_proxy_host':'118.114.77.47',
-         'http_proxy_port':'8080'}
+proxy = {'http_proxy_host':'121.199.42.198',
+         'http_proxy_port':'3129'}
 
 tableName = 'okex'
 conn = create_engine('mysql://root:1qaz@WSX@192.168.8.203/zzmf_trading?charset=utf8',echo = False)
