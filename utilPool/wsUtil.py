@@ -13,7 +13,9 @@ from time import sleep
 
 class wsUtilfunc(object):
     def __init__(self):
-        self.ws = None
+        self.status = 0
+        self.refreshSend = 0
+        self.ws = None  # websocket应用对象
         self.res = []
 
     def readData(self, evt):
@@ -26,20 +28,35 @@ class wsUtilfunc(object):
         data = json.loads(inflated)
         return data
 
+    def onMessage(self, ws, evt):
+        """信息推送"""
+        if json.loads(evt)[0]['data'].get('asks'):
+            self.res.append(json.dumps(json.loads(evt)[0]['data']))
+        print('onMessage中全局变量长度为'+str(len(self.res)))
+        # print(evt)
+
     def onError(self, ws, evt):
         """错误推送"""
-        print('接口发生错误')
         print(evt)
 
+    def getData(self):
+        pass
+
     def saveData(self, conn, tableName):
-        tmp_ = pd.DataFrame.from_dict(self.res)
-        self.res = []
-        tmp_.to_sql(tableName, conn, if_exists='append')
-        print('当前时间为' + str(datetime.now()) + ',数据长度为' + str(len(tmp_)) + ',正在储存数据...')
+        """保存数据"""
+        while True:
+            if self.status:
+                tmp_ = pd.DataFrame([],columns=['data'])
+                sleep(10)
+                tmp_.append(pd.DataFrame.from_dict(self.res))
+                self.res = []
+                tmp_.to_sql(tableName, conn, if_exists='append')
+                print('当前时间为' + str(datetime.now()) + ',数据长度为' + str(len(tmp_)) + ',正在储存数据...')
+
 
     def onClose(self, ws):
         """接口断开"""
-        print('接口未连接')
+        print('接口已关闭')
 
     def onOpen(self, ws):
         """接口打开"""
@@ -48,8 +65,14 @@ class wsUtilfunc(object):
     def close(self):
         """关闭接口"""
         self.ws.close()
-        print('接口已关闭')
 
-    def getStatus(self):
+    def isDisconn(self):
         """返回状态"""
-        return self.ws.sock.connected
+        while True:
+            if self.ws:
+                if not self.ws.sock:
+                    self.status = 0
+                    self.refreshSend = 0
+                else:
+                    self.status = 1
+            sleep(1)

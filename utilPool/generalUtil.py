@@ -5,38 +5,42 @@ Created on 2018/1/10 16:34
 @author: JERRY
 """
 from threading import Thread
+import ctypes
+import inspect
+from time import sleep
 
 
 class myThread(Thread):
 
-    def __init__(self,name,func,kwargs = None):
-        Thread.__init__(self)
-        self.name = name
-        self._callback = func
-        self._callParam = kwargs
+    def __init__(self, name = None, target=None, *args, **kwargs):
+        Thread.__init__(self, name=name, target=target, *args, **kwargs)
 
-    def go(self):
-        self.start()
+    def _async_raise(self, exctype):
+        """raises the exception, performs cleanup if needed"""
+        tid = ctypes.c_long(self.ident)
+        if not inspect.isclass(exctype):
+            exctype = type(exctype)
+        res = ctypes.pythonapi.PyThreadState_SetAsyncExc(tid, ctypes.py_object(exctype))
+        if res == 0:
+            raise ValueError("invalid thread id")
+        elif res != 1:
+            # """if it returns a number greater than one, you're in trouble,
+            # and you should call it again with exc=NULL to revert the effect"""
+            ctypes.pythonapi.PyThreadState_SetAsyncExc(tid, None)
+            raise SystemError("PyThreadState_SetAsyncExc failed")
 
-    def run(self):
-        if self._callback:
-            try:
-                self.callback()
-            except Exception as e:
-                print(e)
-
-    def callback(self):
-        if self._callParam is None:
-            self._callback()
-        else:
-            try:
-                expression = "self._callback("
-                for i in list(self._callParam):
-                    expression+=str(i) + '=' + str(self._callParam[i]) + ','
-                return eval(expression[:-1]+')')
-            except Exception as e:
-                print(e)
+    def close(self):
+        self._async_raise(SystemExit)
+        print(self.name + ' has been killed!')
 
 
 if __name__ == '__main__':
-    test = myThread(name='t1', func=[print(x) for x in range(100)])
+    def t1(x = 0, y = 0, z = 0):
+        while True:
+            print(x+y+z)
+            sleep(1)
+
+    param = {'x':1,'z':2}
+
+    test = myThread(name='test',target=t1,kwargs=param)
+    test.start()
