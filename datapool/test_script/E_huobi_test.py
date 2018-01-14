@@ -12,11 +12,11 @@ from utilPool.generalUtil import myThread
 
 ps.install_as_MySQLdb()
 
-proxy = {'http_proxy_host':'125.210.121.113',
-         'http_proxy_port':'3128'}
+proxy = {'http_proxy_host':'101.201.79.172',
+         'http_proxy_port':'808'}
 
 tableName = 'huobi'
-conn = create_engine('mysql://root:1qaz@WSX@192.168.8.203/zzmf_trading?charset=utf8',echo = False)
+conn = create_engine( 'mysql://Jerry:Eli19890908@localhost/datapool?charset=utf8',echo = False)
 
 threadList = []
 test = HuobiApi()
