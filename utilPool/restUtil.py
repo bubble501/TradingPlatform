@@ -7,16 +7,16 @@ Created on 2018/1/14 17:35
 
 import http.client
 import urllib
-import json
 from hashlib import sha512
 import hmac
 from time import sleep
 import requests
+from utilPool.dataUtil import dataUtilfunc
 
 
-class rsUtilfunc(object):
+class rsUtilfunc(dataUtilfunc):
     def __init__(self):
-        pass
+        dataUtilfunc.__init__(self)
 
     @staticmethod
     def getSign(params, secretKey):
@@ -31,30 +31,27 @@ class rsUtilfunc(object):
     def httpGet(url, resource, params='', proxy={}):
         proxy = {'http':proxy.get('host')+':'+str(proxy.get('port'))}
         data = requests.get(url + resource + '/' + params, proxies=proxy)
-        # conn.request("GET", resource + '/' + params)
-        # response = conn.getresponse()
-        # data = response.read().decode('utf-8')
         return data.json()
 
-    @staticmethod
-    def httpPost(url, resource, params, apikey, secretkey):
-        headers = {
-            "Content-type": "application/x-www-form-urlencoded",
-            "KEY": apikey,
-            "SIGN": rsUtilfunc.getSign(params, secretkey)
-        }
-        conn = http.client.HTTPSConnection(url, timeout=10)
-        if params:
-            temp_params = urllib.parse.urlencode(params)
-        else:
-            temp_params = ''
-        print(temp_params)
-        conn.request("POST", resource, temp_params, headers)
-        response = conn.getresponse()
-        data = response.read().decode('utf-8')
-        params.clear()
-        conn.close()
-        return data
+    # @staticmethod
+    # def httpPost(url, resource, params, apikey, secretkey):
+    #     headers = {
+    #         "Content-type": "application/x-www-form-urlencoded",
+    #         "KEY": apikey,
+    #         "SIGN": rsUtilfunc.getSign(params, secretkey)
+    #     }
+    #     conn = http.client.HTTPSConnection(url, timeout=10)
+    #     if params:
+    #         temp_params = urllib.parse.urlencode(params)
+    #     else:
+    #         temp_params = ''
+    #     print(temp_params)
+    #     conn.request("POST", resource, temp_params, headers)
+    #     response = conn.getresponse()
+    #     data = response.read().decode('utf-8')
+    #     params.clear()
+    #     conn.close()
+    #     return data
 
     @staticmethod
     def callback(callback, *args, **kwargs):
