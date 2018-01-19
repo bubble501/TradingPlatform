@@ -5,14 +5,14 @@ Created on 2018/1/14 17:48
 @author: JERRY
 """
 
-from datapool.general_config import gateio_rest
+from datapool.general_config import bit_z_rest
 from utilPool.restUtil import rsUtilfunc
 
-class GateIO(rsUtilfunc):
+class BitZ(rsUtilfunc):
 
     def __init__(self,proxy = {}):
         rsUtilfunc.__init__(self)
-        self.__url = gateio_rest
+        self.__url = bit_z_rest
         self.proxy = proxy
 
     #所有交易对
@@ -56,7 +56,6 @@ class GateIO(rsUtilfunc):
     # 单项交易对市场深度
     def orderBook(self,param):
         URL = "/api2/1/orderBook"
-        param=''
         return rsUtilfunc.httpGet(self.__url, URL, param,self.proxy)
 
 

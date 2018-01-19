@@ -5,45 +5,15 @@ Created on 2018/1/14 17:48
 @author: JERRY
 """
 
-from datapool.general_config import gateio_rest
+from datapool.general_config import lbank_rest
 from utilPool.restUtil import rsUtilfunc
+import json
 
-class GateIO(rsUtilfunc):
-
+class Lbank(rsUtilfunc):
     def __init__(self,proxy = {}):
         rsUtilfunc.__init__(self)
-        self.__url = gateio_rest
+        self.__url = lbank_rest
         self.proxy = proxy
-
-    #所有交易对
-    def pairs(self):
-        URL = "/api2/1/pairs"
-        params=''
-        return rsUtilfunc.httpGet(self.__url,URL,params)
-
-
-    #市场订单参数
-    def marketinfo(self):
-        URL = "/api2/1/marketinfo"
-        params=''
-        return rsUtilfunc.httpGet(self.__url,URL,params,self.proxy)
-
-    #交易市场详细行情
-    def marketlist(self):
-        URL = "/api2/1/marketlist"
-        params=''
-        return rsUtilfunc.httpGet(self.__url,URL,params,self.proxy)
-
-    #所有交易行情
-    def tickers(self):
-        URL = "/api2/1/tickers"
-        params=''
-        return rsUtilfunc.httpGet(self.__url,URL,params,self.proxy)
-
-    #单项交易行情
-    def ticker(self,param):
-        URL = "/api2/1/ticker"
-        return rsUtilfunc.httpGet(self.__url,URL,param,self.proxy)
 
 
     # 所有交易对市场深度
@@ -55,9 +25,9 @@ class GateIO(rsUtilfunc):
 
     # 单项交易对市场深度
     def orderBook(self,param):
-        URL = "/api2/1/orderBook"
-        param=''
-        return rsUtilfunc.httpGet(self.__url, URL, param,self.proxy)
+        URL = "/v1/depth.do"
+        msg = rsUtilfunc.httpPost(self.__url, URL, param, self.proxy)
+        self.res.append(json.dumps(msg))
 
 
     # 历史成交记录

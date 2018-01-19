@@ -28,10 +28,29 @@ class rsUtilfunc(dataUtilfunc):
         return my_sign
 
     @staticmethod
-    def httpGet(url, resource, params='', proxy={}):
-        proxy = {'http':proxy.get('host')+':'+str(proxy.get('port'))}
-        data = requests.get(url + resource + '/' + params, proxies=proxy)
+    def httpGet(url: object, resource: object, params: object = '', proxy: object = {}) -> object:
+        if proxy:
+            proxy = {'http':proxy.get('http_proxy_host')+':'+str(proxy.get('http_proxy_port'))}
+        data = requests.get(url + resource +'/'+ params+'/', proxies=proxy)
         return data.json()
+
+    def httpGet_livecoin(url: object, resource: object, params: object = '', proxy: object = {}) -> object:
+        if proxy:
+            proxy = {'http':proxy.get('http_proxy_host')+':'+str(proxy.get('http_proxy_port'))}
+        data = requests.get(url + resource +'?'+ params, proxies=proxy)
+        return data.json()
+
+    def httpPost(url, resource, params, proxy={}):
+        if proxy:
+            proxy = {'http':proxy.get('http_proxy_host')+':'+str(proxy.get('http_proxy_port'))}
+        Url=url+resource
+        session=requests.Session()
+        data= session.post(Url, data=params, proxies=proxy)
+        return data.json()
+
+
+
+
 
     # @staticmethod
     # def httpPost(url, resource, params, apikey, secretkey):
@@ -62,3 +81,4 @@ class rsUtilfunc(dataUtilfunc):
                 except Exception as e:
                     raise e
                 sleep(0.5)
+#
