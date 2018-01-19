@@ -20,10 +20,12 @@ param = {'depth':{'event':'addChannel',
          }
 
 threadList.append(myThread(name='monitor', target=test.isDisconn))
-threadList.append(myThread(name='keepConnect', target=test.keepconnect,kwargs=proxy))
+threadList.append(myThread(name='keepConnect', target=test.keepconnect, kwargs=proxy))
 threadList.append(myThread(name='refreshCommand', target=test.refreshCommand, args=(param,)))
-threadList.append(myThread(name='savedata',target=test.saveData,args=(conn,tableName)))
+threadList.append(myThread(name='savedata',target=test.saveData, args=(conn, tableName)))
 for i in threadList:
     i.start()
 # test.sendMarketDataRequest(param)
 # t1 = test.saveData(conn,tablename)
+
+

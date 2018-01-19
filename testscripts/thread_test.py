@@ -16,16 +16,31 @@ status = 0  # 0 表示未连接，1 表示已连接， 2 表示重连接
 class test:
     def __init__(self, status):
         self.status = status
+        self.stop = True
 
     def connect(self):
         while True:
+            con.acquire()
             if self.status == 0:
                 print('start connecting')
-                sleep(2)
+                sleep(5)
                 print('on connection...')
                 self.status = 2
 
+    def monitor(self):
+        sleep(1)
+        while True:
+            if self.stop:
+                con.acquire()
+                self.status = 0
+                con.wait()
+                con.release()
+            else:
+                self.status = 1
+
+
     def sendMsg(self):
+        sleep(1)
         print('开始发送信息')
         while True:
             if self.status == 2:
@@ -34,6 +49,7 @@ class test:
             sleep(1)
 
     def saveData(self):
+        sleep(1)
         print('开始储存数据')
         while True:
             if self.status == 1:
@@ -41,6 +57,7 @@ class test:
                 sleep(10)
 
     def earning(self):
+        sleep(1)
         print('开始赚钱')
         while True:
             if self.status == 1:

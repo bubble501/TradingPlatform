@@ -28,7 +28,7 @@ class OkexApi(wsUtilfunc):
         if json.loads(evt)[0]['data'].get('asks'):
             self.res.append(json.dumps(json.loads(evt)[0]['data']))
         print('onMessage中全局变量长度为'+str(len(self.res)))
-        # print(evt)
+
 
     def __connect(self, trace=False):
         """连接服务器"""
@@ -73,3 +73,4 @@ class OkexApi(wsUtilfunc):
                 self.refreshSend = 0
                 print('命令已发送')
             sleep(1)
+
